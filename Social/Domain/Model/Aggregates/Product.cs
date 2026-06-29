@@ -19,7 +19,7 @@ public sealed class Product
     public string Categoria { get; set; } = string.Empty;
 
     [BsonElement("precio")]
-    public decimal Precio { get; set; }
+    public double Precio { get; set; }
 
     [BsonElement("stock")]
     public int Stock { get; set; }

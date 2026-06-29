@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
 using MonitoNet.Backend.Iam.Application.QueryServices;
 using MonitoNet.Backend.Social.Application.CommandServices;
 using MonitoNet.Backend.Social.Application.QueryServices;
@@ -13,12 +14,18 @@ public sealed class PublicationsController : ControllerBase
     private readonly IPublicationQueryService _publications;
     private readonly IPublicationCommandService _commands;
     private readonly IUserQueryService _users;
+    private readonly IProductQueryService _products;
 
-    public PublicationsController(IPublicationQueryService publications, IPublicationCommandService commands, IUserQueryService users)
+    public PublicationsController(
+        IPublicationQueryService publications,
+        IPublicationCommandService commands,
+        IUserQueryService users,
+        IProductQueryService products)
     {
         _publications = publications;
         _commands = commands;
         _users = users;
+        _products = products;
     }
 
     [HttpGet]
@@ -37,8 +44,23 @@ public sealed class PublicationsController : ControllerBase
         var author = await _users.GetByIdAsync(command.AutorId);
         if (author is null) return NotFound(new { message = "Author not found." });
 
-        var publication = await _commands.CreateAsync(command);
-        return CreatedAtAction(nameof(GetById), new { id = publication.Id }, publication);
+        if (string.IsNullOrWhiteSpace(command.ProductoRelacionadoId))
+        {
+            return BadRequest(new { message = "ProductoRelacionadoId is required." });
+        }
+
+        var product = await _products.GetByIdAsync(command.ProductoRelacionadoId);
+        if (product is null) return NotFound(new { message = "Related product not found." });
+
+        try
+        {
+            var publication = await _commands.CreateAsync(command);
+            return CreatedAtAction(nameof(GetById), new { id = publication.Id }, publication);
+        }
+        catch (MongoDB.Driver.MongoWriteException ex) when (ex.WriteError?.Code == 121)
+        {
+            return BadRequest(new { message = "Publication does not satisfy database validation.", detail = ex.WriteError?.Message });
+        }
     }
 
     [HttpPost("{id}/like")]
