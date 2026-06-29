@@ -2,10 +2,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MonitoNet.Backend.Iam.Domain.Model.Commands;
 
-public sealed record SignInCommand(
-    [property: Required]
-    string Login,
+public sealed class SignInCommand
+{
+    [Required]
+    public string Login { get; set; } = string.Empty;
 
-    [property: Required]
-    string Password
-);
+    [Required]
+    public string Password { get; set; } = string.Empty;
+}

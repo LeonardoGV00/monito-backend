@@ -2,19 +2,21 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MonitoNet.Backend.Social.Domain.Model.Commands;
 
-public sealed record CreatePublicationCommand(
-    [property: Required]
-    string AutorId,
+public sealed class CreatePublicationCommand
+{
+    [Required]
+    public string AutorId { get; set; } = string.Empty;
 
-    string? ProductoRelacionadoId,
+    [Required]
+    public string ProductoRelacionadoId { get; set; } = string.Empty;
 
-    [property: Required]
-    [property: MinLength(1)]
-    string Titulo,
+    [Required]
+    [MinLength(1)]
+    public string Titulo { get; set; } = string.Empty;
 
-    [property: Required]
-    [property: MinLength(1)]
-    string Descripcion,
+    [Required]
+    [MinLength(1)]
+    public string Descripcion { get; set; } = string.Empty;
 
-    List<PublicationMediaCommand>? Multimedia = null
-);
+    public List<PublicationMediaCommand>? Multimedia { get; set; }
+}

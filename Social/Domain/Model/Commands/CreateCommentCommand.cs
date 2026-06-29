@@ -2,11 +2,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MonitoNet.Backend.Social.Domain.Model.Commands;
 
-public sealed record CreateCommentCommand(
-    [property: Required]
-    string UserId,
+public sealed class CreateCommentCommand
+{
+    [Required]
+    public string UserId { get; set; } = string.Empty;
 
-    [property: Required]
-    [property: MinLength(1)]
-    string Comentario
-);
+    [Required]
+    [MinLength(1)]
+    public string Comentario { get; set; } = string.Empty;
+}

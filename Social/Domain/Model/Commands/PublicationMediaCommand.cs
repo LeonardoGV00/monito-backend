@@ -1,14 +1,15 @@
-using System.ComponentModel.DataAnnotations;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace MonitoNet.Backend.Social.Domain.Model.Commands;
 
-public sealed record PublicationMediaCommand(
-    [property: Required]
-    string Tipo,
+public sealed class PublicationMediaCommand
+{
+    [BsonElement("tipo")]
+    public string Tipo { get; set; } = string.Empty;
 
-    [property: Required]
-    string Url,
+    [BsonElement("url")]
+    public string Url { get; set; } = string.Empty;
 
-    [property: Required]
-    string Formato
-);
+    [BsonElement("formato")]
+    public string Formato { get; set; } = string.Empty;
+}

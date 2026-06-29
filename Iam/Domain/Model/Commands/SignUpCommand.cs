@@ -2,22 +2,21 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MonitoNet.Backend.Iam.Domain.Model.Commands;
 
-public sealed record SignUpCommand(
-    [property: Required]
-    [property: MinLength(3)]
-    string Username,
+public sealed class SignUpCommand
+{
+    [Required]
+    [MinLength(3)]
+    public string Username { get; set; } = string.Empty;
 
-    [property: Required]
-    [property: EmailAddress]
-    string Email,
+    [Required]
+    [EmailAddress]
+    public string Email { get; set; } = string.Empty;
 
-    [property: Required]
-    [property: MinLength(6)]
-    string Password,
+    [Required]
+    [MinLength(6)]
+    public string Password { get; set; } = string.Empty;
 
-    // Se acepta por compatibilidad con clientes antiguos, pero el backend lo ignora
-    string? Rol = null,
-
-    string? Telefono = null,
-    string? Picture = null
-);
+    public string? Rol { get; set; }
+    public string? Telefono { get; set; }
+    public string? Picture { get; set; }
+}

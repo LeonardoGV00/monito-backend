@@ -2,7 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MonitoNet.Backend.Iam.Domain.Model.Commands;
 
-public sealed record FollowUserCommand(
-    [property: Required]
-    string FollowerUserId
-);
+public sealed class FollowUserCommand
+{
+    [Required]
+    public string FollowerUserId { get; set; } = string.Empty;
+}
