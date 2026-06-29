@@ -27,7 +27,9 @@ public sealed class CommentCommandService : ICommentCommandService
     {
         var publication = await _publications.GetByIdAsync(publicationId);
         var user = await _users.GetByIdAsync(command.UserId);
+
         if (publication is null || user is null) return null;
+        if (string.IsNullOrWhiteSpace(command.Comentario)) return null;
 
         var comment = new PublicationComment
         {
@@ -56,5 +58,25 @@ public sealed class CommentCommandService : ICommentCommandService
         return comment;
     }
 
-    public Task<bool> DeleteAsync(string publicationId, string commentId) => _publications.DeleteCommentAsync(publicationId, commentId);
+    public async Task<PublicationComment?> UpdateAsync(string publicationId, string commentId, UpdateCommentCommand command)
+    {
+        var publication = await _publications.GetByIdAsync(publicationId);
+        var user = await _users.GetByIdAsync(command.UserId);
+
+        if (publication is null || user is null) return null;
+        if (string.IsNullOrWhiteSpace(command.Comentario)) return null;
+
+        var comment = publication.Comentarios.FirstOrDefault(c => c.Id == commentId);
+        if (comment is null) return null;
+
+        if (comment.UsuarioId != command.UserId) return null;
+
+        comment.Comentario = command.Comentario;
+
+        var updated = await _publications.UpdateAsync(publication);
+        return updated ? comment : null;
+    }
+
+    public Task<bool> DeleteAsync(string publicationId, string commentId) =>
+        _publications.DeleteCommentAsync(publicationId, commentId);
 }

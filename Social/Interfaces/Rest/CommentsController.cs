@@ -19,7 +19,18 @@ public sealed class CommentsController : ControllerBase
     public async Task<IActionResult> Add(string publicationId, [FromBody] CreateCommentCommand command)
     {
         var comment = await _comments.AddAsync(publicationId, command);
-        return comment is null ? NotFound(new { message = "Publication or user not found." }) : Ok(new { message = "Comment added.", commentId = comment.Id });
+        return comment is null
+            ? NotFound(new { message = "Publication or user not found." })
+            : Ok(new { message = "Comment added.", commentId = comment.Id });
+    }
+
+    [HttpPut("{commentId}")]
+    public async Task<IActionResult> Update(string publicationId, string commentId, [FromBody] UpdateCommentCommand command)
+    {
+        var comment = await _comments.UpdateAsync(publicationId, commentId, command);
+        return comment is null
+            ? NotFound(new { message = "Publication, user or comment not found." })
+            : Ok(new { message = "Comment updated.", comment });
     }
 
     [HttpDelete("{commentId}")]

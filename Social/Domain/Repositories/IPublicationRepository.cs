@@ -8,6 +8,7 @@ public interface IPublicationRepository
     Task<List<Publication>> GetAllAsync();
     Task<Publication?> GetByIdAsync(string id);
     Task CreateAsync(Publication publication);
+    Task<bool> UpdateAsync(Publication publication);
     Task<bool> DeleteAsync(string id);
     Task<bool> IncrementLikesAsync(string publicationId);
     Task<bool> AddCommentAsync(string publicationId, PublicationComment comment);
