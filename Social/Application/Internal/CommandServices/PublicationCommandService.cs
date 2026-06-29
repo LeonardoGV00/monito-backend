@@ -32,12 +32,12 @@ public sealed class PublicationCommandService : IPublicationCommandService
             ProductoRelacionadoId = command.ProductoRelacionadoId,
             Titulo = command.Titulo,
             Descripcion = command.Descripcion,
-            Multimedia = command.Multimedia.Select(x => new PublicationMedia
+            Multimedia = command.Multimedia?.Select(x => new PublicationMedia
             {
                 Tipo = x.Tipo,
                 Url = x.Url,
                 Formato = x.Formato
-            }).ToList(),
+            }).ToList() ?? [],
             Likes = 0,
             Comentarios = [],
             FechaPublicacion = DateTime.UtcNow
@@ -62,7 +62,7 @@ public sealed class PublicationCommandService : IPublicationCommandService
             await _notifications.CreateAsync(new Notification
             {
                 UsuarioId = author.Id,
-                Tipo = NotificationType.Like,
+                Tipo = NotificationType.like,
                 Mensaje = $"{user.Username} dio like a tu publicación.",
                 Leido = false,
                 Fecha = DateTime.UtcNow

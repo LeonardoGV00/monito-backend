@@ -37,7 +37,7 @@ public sealed class UserCommandService : IUserCommandService
         await _notifications.CreateAsync(new Notification
         {
             UsuarioId = targetUser.Id,
-            Tipo = NotificationType.Follow,
+            Tipo = NotificationType.seguidor,
             Mensaje = $"{followerUser.Username} comenzó a seguirte.",
             Leido = false,
             Fecha = DateTime.UtcNow

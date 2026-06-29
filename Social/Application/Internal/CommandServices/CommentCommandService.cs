@@ -46,7 +46,7 @@ public sealed class CommentCommandService : ICommentCommandService
             await _notifications.CreateAsync(new MonitoNet.Backend.Social.Domain.Model.Aggregates.Notification
             {
                 UsuarioId = author.Id,
-                Tipo = NotificationType.Comment,
+                Tipo = NotificationType.comentario,
                 Mensaje = $"{user.Username} comentó tu publicación.",
                 Leido = false,
                 Fecha = DateTime.UtcNow

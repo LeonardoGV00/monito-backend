@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
 using MonitoNet.Backend.Iam.Application.CommandServices;
 using MonitoNet.Backend.Iam.Application.QueryServices;
 using MonitoNet.Backend.Iam.Domain.Model.Commands;
@@ -21,14 +22,21 @@ public sealed class AuthenticationController : ControllerBase
     [HttpPost("sign-up")]
     public async Task<IActionResult> SignUp([FromBody] SignUpCommand command)
     {
-        var byUsername = await _users.GetByUsernameAsync(command.Username);
+        var byUsername = await _users.GetByUsernameAsync(command.Username.Trim());
         if (byUsername is not null) return Conflict(new { message = "Username already exists." });
 
-        var byEmail = await _users.GetByEmailAsync(command.Email);
+        var byEmail = await _users.GetByEmailAsync(command.Email.Trim());
         if (byEmail is not null) return Conflict(new { message = "Email already exists." });
 
-        var user = await _auth.SignUpAsync(command);
-        return Created($"/api/v1/users/{user.Id}", user);
+        try
+        {
+            var user = await _auth.SignUpAsync(command);
+            return Created($"/api/v1/users/{user.Id}", user);
+        }
+        catch (MongoWriteException ex) when (ex.WriteError?.Code == 121)
+        {
+            return BadRequest(new { message = "User does not satisfy database validation.", detail = ex.WriteError?.Message });
+        }
     }
 
     [HttpPost("sign-in")]
